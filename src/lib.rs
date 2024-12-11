@@ -306,9 +306,11 @@ impl Queue {
         addr: GuestAddress,
         len: usize,
     ) -> Result<*mut u8, QueueError> {
-        let slice = mem.get_slice(addr, len).map_err(QueueError::MemoryError)?;
-        slice.bitmap().mark_dirty(0, len);
-        Ok(slice.ptr_guard_mut().as_ptr())
+        // let slice = mem.get_slice(addr, len).map_err(QueueError::MemoryError)?;
+        // slice.bitmap().mark_dirty(0, len);
+        // Ok(slice.ptr_guard_mut().as_ptr())
+        let res = 0 as *mut u8;
+        Ok(res)
     }
 
     /// Set up pointers to the queue objects in the guest memory
@@ -434,36 +436,36 @@ impl Queue {
     }
 
     /// Validates the queue's in-memory layout is correct.
-    pub fn is_valid<M: GuestMemory>(&self, mem: &M) -> bool {
-        let desc_table = self.desc_table_address;
-        let desc_table_size = self.desc_table_size();
-        let avail_ring = self.avail_ring_address;
-        let avail_ring_size = self.avail_ring_size();
-        let used_ring = self.used_ring_address;
-        let used_ring_size = self.used_ring_size();
+    // pub fn is_valid<M: GuestMemory>(&self, mem: &M) -> bool {
+    //     let desc_table = self.desc_table_address;
+    //     let desc_table_size = self.desc_table_size();
+    //     let avail_ring = self.avail_ring_address;
+    //     let avail_ring_size = self.avail_ring_size();
+    //     let used_ring = self.used_ring_address;
+    //     let used_ring_size = self.used_ring_size();
 
-        if !self.ready {
-            false
-        } else if self.size > self.max_size || self.size == 0 || (self.size & (self.size - 1)) != 0
-        {
-            false
-        } else if desc_table.raw_value() & 0xf != 0 {
-            false
-        } else if avail_ring.raw_value() & 0x1 != 0 {
-            false
-        } else if used_ring.raw_value() & 0x3 != 0 {
-            false
-        // range check entire descriptor table to be assigned valid guest physical addresses
-        } else if mem.get_slice(desc_table, desc_table_size).is_err() {
-            false
-        } else if mem.get_slice(avail_ring, avail_ring_size).is_err() {
-            false
-        } else if mem.get_slice(used_ring, used_ring_size).is_err() {
-            false
-        } else {
-            true
-        }
-    }
+    //     if !self.ready {
+    //         false
+    //     } else if self.size > self.max_size || self.size == 0 || (self.size & (self.size - 1)) != 0
+    //     {
+    //         false
+    //     } else if desc_table.raw_value() & 0xf != 0 {
+    //         false
+    //     } else if avail_ring.raw_value() & 0x1 != 0 {
+    //         false
+    //     } else if used_ring.raw_value() & 0x3 != 0 {
+    //         false
+    //     // range check entire descriptor table to be assigned valid guest physical addresses
+    //     } else if mem.get_slice(desc_table, desc_table_size).is_err() {
+    //         false
+    //     } else if mem.get_slice(avail_ring, avail_ring_size).is_err() {
+    //         false
+    //     } else if mem.get_slice(used_ring, used_ring_size).is_err() {
+    //         false
+    //     } else {
+    //         true
+    //     }
+    // }
 
     /// Returns the number of yet-to-be-popped descriptor chains in the avail ring.
     pub fn len(&self) -> u16 {
