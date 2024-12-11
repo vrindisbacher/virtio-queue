@@ -1,0 +1,15 @@
+[package]
+name = "virtio-queue-isolated"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+displaydoc = "0.2.5"
+thiserror = "2.0.3"
+vm-memory = { version = "0.16.1", features = ["backend-mmap", "backend-bitmap"] }
+# flux-rs = { git  = "https://github.com/flux-rs/flux.git" }
+flux-rs = { path = "../../flux/lib/flux-rs" }
+
+
+[package.metadata.flux]
+enabled = true
